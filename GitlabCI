@@ -1,0 +1,23 @@
+#Basic YAML file structure template for Gitlab CI pipeline 
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
+  script:
+    - echo "Building..."
+    - make build
+
+test_job:
+  stage: test
+  script:
+    - echo "Testing..."
+    - make test
+
+deploy_job:
+  stage: deploy
+  script:
+    - echo "Deploying..."
+    - make deploy
