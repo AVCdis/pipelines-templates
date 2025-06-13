@@ -1,0 +1,13 @@
+#Example template for a GCP Pipeline using Cloud Build Service in a process of building, testing, and deploying a web application to Google Kubernetes Engine (GKE).
+
+1. Code Repository: Developers push code changes to a Git repository (e.g., GitHub or Cloud Source Repositories).
+2. Trigger Build: Cloud Build is configured to trigger a build process whenever code is pushed to the repository.
+3. Build Process:
+  Step 1: Pull the latest code from the repository.
+  Step 2: Run automated tests to ensure the code is working as expected.
+  Step 3: Build Docker images of the application.
+  Step 4: Push the Docker images to Container Registry.
+4. Deploy to GKE:
+  Step 5: Deploy the Docker images to a GKE cluster.
+  Step 6: Run integration tests to verify the deployment.
+5. Notification: Notify the team via Slack or email about the build and deployment status.
