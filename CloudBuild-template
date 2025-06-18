@@ -1,4 +1,5 @@
-#Example template for a GCP Pipeline using Cloud Build Service in a process of building, testing, and deploying a web application to Google Kubernetes Engine (GKE).
+#Example template for a GCP Pipeline using Cloud Build Service in a process of building, testing, and deploying a web application 
+#to Google Kubernetes Engine (GKE).
 
 1. Code Repository: Developers push code changes to a Git repository (e.g., GitHub or Cloud Source Repositories).
 2. Trigger Build: Cloud Build is configured to trigger a build process whenever code is pushed to the repository.
@@ -11,3 +12,35 @@
   Step 5: Deploy the Docker images to a GKE cluster.
   Step 6: Run integration tests to verify the deployment.
 5. Notification: Notify the team via Slack or email about the build and deployment status.
+
+steps:
+  # build the container image
+- name: "gcr.io/cloud-builders/docker"
+  args: ["build", "-t", "gcr.io/project-id/image:tag", "."]
+  # push container image
+- name: "gcr.io/cloud-builders/docker"
+  args: ["push", "gcr.io/project-id/image:tag"]
+  # deploy container image to GKE
+- name: "gcr.io/cloud-builders/gke-deploy"
+  args:
+  - run
+  - --filename=kubernetes-resource-file
+  - --image=gcr.io/project-id/image:tag
+  - --location=location
+  - --cluster=cluster
+
+#Build and Deploy container image to Cloud Run 
+# [START cloudbuild_run_example_builddeploy]
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/myimage:$SHORT_SHA', '.']
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/myimage:$SHORT_SHA']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['run', 'deploy', 'myservice', '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/myimage:$SHORT_SHA', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated']
+images:
+- us-central1-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/myimage
+# [END cloudbuild_run_example_builddeploy]
